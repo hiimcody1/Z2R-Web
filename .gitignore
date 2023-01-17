@@ -1,0 +1,5 @@
+config.php
+generated/*
+pyWrapper.sh
+data/*
+js/memory.js

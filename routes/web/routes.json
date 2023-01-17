@@ -1,0 +1,25 @@
+{
+    "home": {
+        "_base": "home.php",
+        "_nav": true
+    },
+    "randomizer": {
+        "_base": "randomizer.php",
+        "_nav": true,
+        "preset": "preset.php",
+        "generate": "generate.php"
+    },
+    "customizer": {
+        "_base": "customizer.php",
+        "_nav": true,
+        "generate": "customgen.php"
+    },
+    "perm": {
+        "_base": "perm.php",
+        "_nav": false
+    },
+    "test": {
+        "_base": "test.php",
+        "_nav": false
+    }
+}
