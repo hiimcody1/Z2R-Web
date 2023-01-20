@@ -4,24 +4,22 @@
  * File Created: Saturday, 6th August 2022 8:36:11 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 9th January 2023 9:55:03 pm
+ * Last Modified: Tuesday, 17th January 2023 6:38:54 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License http://www.opensource.org/licenses/MIT
  */
 
 ob_start();
-require("config.php");
-require("classes/unique.php");
-require("classes/class.process.php");
-require("classes/class.template.php");
-require("classes/class.ui.php");
-require("classes/class.database.php");
+require_once("config.php");
+require_once("classes/unique.php");
+require_once("classes/class.template.php");
+require_once("classes/class.ui.php");
+
+require_once("classes/class.Z2R.php");
 
 $UI = new UI();
 $UI->Render($UI->GetRoute($_GET['view']));
 
-
-echo $Template->render("base.php");
 ob_end_flush();
 ?>

@@ -4,7 +4,7 @@
  * File Created: Saturday, 14th January 2023 7:17:21 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 16th January 2023 11:16:49 pm
+ * Last Modified: Tuesday, 17th January 2023 1:35:28 am
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -206,10 +206,6 @@ class Z2RFlags {
             */
             while(strlen($this->flags) < $this::TOTAL_FLAGS)
                 $this->flags .= "A";
-
-            echo "Parsing Flagset: " . $this->flags . "\r\n";
-            //var_export(BitArray::fromInteger(34)->toArray());
-            //echo str_pad((string)decbin(),7,"0",STR_PAD_LEFT);
             
             $BitArrays = Array();
 
@@ -218,49 +214,36 @@ class Z2RFlags {
             for($i=0;$i<$this::TOTAL_FLAGS;$i++) {
                 $BitArrays[] = new Z2RBitArray($this->flags[$i]);
                 for($b=0;$b<6;$b++) {
-                    //echo "[$i][$b] ";
                     foreach($props as $prop) {
-                        if($prop->matchesArrayAndBit($i,$b)) {
-                            //echo $prop->Name . "\t\t";
-                            //echo "ArrayId: $i Bit: $b\tVal: {$BitArrays[$i]->getBit($b)}\t| ";
+                        if($prop->matchesArrayAndBit($i,$b))
                             $prop->setBit($i,$b,$BitArrays[$i]->getBit($b));
-                            //echo " Resolved to value: " . $prop->getValue();
-                            //echo "\r\n";
-                        }
                     }
-                    //echo  "\r\n";
                 }
             }
         }
 
-        public function SaveFlags() {
+        public function SaveFlags():string {
             $BitArrays = Array();
 
             $props = $this->getAllProps();
             for($i=0;$i<$this::TOTAL_FLAGS;$i++) {
                 $ba = new PseudoBitArray();
                 for($b=0;$b<6;$b++) {
-                    //echo "[$i][$b] ";
                     foreach($props as $prop) {
-                        if($prop->matchesArrayAndBit($i,$b)) {
-                            //echo $prop->Name . "\t\t\t";
-                            //echo "ArrayId:$i BitId:$b Val:";
-                            //echo $prop->getBit($i,$b) . " | ";
+                        if($prop->matchesArrayAndBit($i,$b))
                             $ba->setBit($b,(int)$prop->getBit($i,$b));
-                            //$prop->setBit($i,$b,$BitArrays[$i]->getBit($b));
-                        }
                     }
-                    //echo  "\r\n";
                 }
                 $BitArrays[$i] = new Z2RBitArray();
                 $ba->reverseArray();
                 $BitArrays[$i]->setInt($ba->getInt());
             }
-            echo "Saved Flagset: ";
+
+            $flags="";
             foreach($BitArrays as $ba) {
-                echo $ba->asGlyph();
+                $flags = $flags . $ba->asGlyph();
             }
-            echo "\r\n";
+            return $flags;
         }
 
         public function dumpProps() {

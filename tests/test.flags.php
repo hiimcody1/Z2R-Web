@@ -4,23 +4,49 @@
  * File Created: Saturday, 14th January 2023 7:27:42 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 16th January 2023 11:16:03 pm
+ * Last Modified: Tuesday, 17th January 2023 5:11:31 am
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
  */
+require_once("./classes/class.process.php");
+require_once("./classes/class.PseudoBitArray.php");
+require_once("./classes/class.Z2RFlags.php");
+require_once("./classes/class.Z2RSeed.php");
+require_once("./classes/class.Z2Randomizer.php");
+require_once("./classes/class.util.php");
+require_once("config.php");
+require_once("classes/unique.php");
+require_once("classes/class.process.php");
+require_once("classes/class.template.php");
+require_once("classes/class.ui.php");
+require_once("classes/class.database.php");
+require_once("./classes/class.Z2RFlags.php");
+//mono Z2Randomizer.exe --rom '/var/www/html/z2r/data/ZELDA2.NES' --flags 'iyAqh$j#g7@$ZqTBT!BhOA!0P@@A' --seed '123456789'
 
-require("./classes/class.Z2RFlags.php");
+$db = new Database();
+
+$seed = $db->fetchSeed("AEN1xjsn2");
+var_export(json_decode($seed->meta,true));
+die();
+
+$r = new Z2Randomizer(new Z2RFlags('jhEhMROm7DZ$MHRBTNBhBAh0PSmA'),123456789);
+$r->generate();
+die();
 if(isset($_POST['flagset'])) {
+    echo $_POST['flagset']."\r\n";
     $testFlagset = new Z2RFlags($_POST['flagset']);
-    $testFlagset->dumpProps();
-    $testFlagset->SaveFlags();
+    //$testFlagset->dumpProps();
+    echo $testFlagset->SaveFlags();
+    $randomizer = new Z2Randomizer($testFlagset,123456789);
+    var_export($randomizer->generate());
 } else {
     echo "<form method=\"POST\"><input type=\"text\" name=\"flagset\"><input type=\"submit\" name=\"test\" value=\"Parse Flagset\" /></form>";
     $beginnerFlagset = 'jhEhMROm7DZ$MHRBTNBhBAh0PSmA';
+    echo "$beginnerFlagset\r\n";
     $beginnerFlags = new Z2RFlags($beginnerFlagset);
-    $beginnerFlags->dumpProps();
-    $beginnerFlags->SaveFlags();
+    //$beginnerFlags->dumpProps();
+    echo $beginnerFlags->SaveFlags();
 }
 die();
 //Start Configuration Tab

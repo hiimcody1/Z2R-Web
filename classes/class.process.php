@@ -4,51 +4,47 @@
  * File Created: Saturday, 6th August 2022 8:57:10 pm
  * Author: hiimcody1
  * 
- * Last Modified: Saturday, 6th August 2022 11:28:04 pm
+ * Last Modified: Tuesday, 17th January 2023 4:16:32 am
  * Modified By: hiimcody1
  * 
  * License: MIT License http://www.opensource.org/licenses/MIT
  */
 
 class Process {
-    private $process;
-    private $pipes;
+    private $processHandle;
+    private $program;
+    private $args;
 
-    public function __construct($Program,$WorkingDirectory) {
-        $descriptorSpec = array(
-            0 => array("pipe", "r"),    //STDIN
-            1 => array("pipe", "w"),    //STDOUT
-            2 => array("pipe", "w")     //STDERR
-        );
-        if(Config::Debug)
-            echo "Launching ".implode(" ",$Program)." from {$WorkingDirectory}...";
-        $this->process = proc_open($Program,$descriptorSpec,$this->pipes,$WorkingDirectory);
-        if(Config::Debug)
-            var_export($this->process);
+    public function __construct($Program,$Arguments=null) {
+        $this->program = $Program;
+        $this->args = ($Arguments !== null) ? $this->implodeArgs($Arguments) : "";
     }
-    
-    public function ReadPipes() {
-        if(is_resource($this->process)) {
-            fclose($this->pipes[0]);
-            
-            while(!feof($this->pipes[2])) {
-                echo fgets($this->pipes[2]);
-            }
-            fclose($this->pipes[2]);
 
-            while(!feof($this->pipes[1])) {
-                echo fgets($this->pipes[1]);
+    public function Start() {
+        if(Config::Debug)
+            echo "Launching '{$this->program} {$this->args}'...";
+        $this->processHandle = popen($this->program." ".$this->args,"r");
+        if(Config::Debug)
+            var_export($this->processHandle);
+    }
+
+    public function GetOutput():string {
+        $output = "";
+        if(is_resource($this->processHandle)) {
+            while(!feof($this->processHandle)) {
+                $output .= fgets($this->processHandle);
             }
-            fclose($this->pipes[1]);
+            fclose($this->processHandle);
         }
+        return $output;
     }
 
-    public function Status() {
-        return proc_get_status($this->process);
-    }
-
-    public function Terminate() {
-        return proc_close($this->process);
+    private function implodeArgs($Arguments) {
+        $args="";
+        foreach($Arguments as $key=>$value)
+            $args .= $key . " '" . $value . "' ";
+            
+        return $args;
     }
 }
 

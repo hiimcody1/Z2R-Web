@@ -21,5 +21,9 @@
     "test": {
         "_base": "test.php",
         "_nav": false
+    },
+    "loading": {
+        "_base": "loading.php",
+        "_nav": false
     }
 }

@@ -1,1 +1,6 @@
-{}
+{
+    "api": {
+        "checker": "api.checker.php",
+        "hash": "api.fetch.php"
+    }
+}

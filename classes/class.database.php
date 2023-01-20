@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 8:03:33 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 9th January 2023 9:56:38 pm
+ * Last Modified: Tuesday, 17th January 2023 6:32:25 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -19,10 +19,7 @@ class Database {
             $this->databaseHandle = new PDO($connectionString, Config::DBUser, Config::DBPass);
             $this->databaseHandle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(Exception $e) {
-            if(Config::Debug)
-                die("Database Connection Error <pre>" . var_export($connectionString) . "<br />" . var_export($e,true) . "</pre>");
-            else
-                die("Database Connection Error");
+            Util::FatalError("Database Connection Error" , array($connectionString,$e));
         }
     }
 
@@ -36,15 +33,54 @@ class Database {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $results;
         } else {
-            if(Config::Debug)
-                die("Error retrieving Flagsets <pre>" .  var_export($this->databaseHandle->errorInfo(),true) . "</pre>");
-            else
-                die("Error retrieving Flagsets");
+            Util::FatalError("Error retrieving Flagsets", array($this->databaseHandle->errorInfo()));
         }
+    }
 
+    public function fetchFlagsetByName($name) {
+        $stmt = $this->databaseHandle->prepare("SELECT * FROM flagsets WHERE `name` LIKE :name ORDER BY `name` LIMIT 1");
+        $stmt->execute(array(
+            "name" => $name
+        ));
+
+        if($stmt) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results[0];
+        } else {
+            Util::FatalError("Error retrieving Flagsets", array($this->databaseHandle->errorInfo()));
+        }
     }
 
     public function storeSeed(Z2RSeed $seed) {
+        $stmt = $this->databaseHandle->prepare("INSERT INTO seeds (hash, seed, build, logic, flags, meta, patch) VALUES (:hash, :seed, :build, :logic, :flags, :meta, :patch);");
+            $stmt->bindParam(":hash", $seed->hash);
+            $stmt->bindParam(":seed", $seed->seed);
+            $stmt->bindParam(":build", $seed->build);
+            $stmt->bindParam(":logic", $seed->logic);
+            $stmt->bindParam(":flags", $seed->flags);
+            $stmt->bindParam(":meta", $seed->meta);
+            $stmt->bindParam(":patch", $seed->patch, PDO::PARAM_LOB);
+        $stmt->execute();
 
+        if(!$stmt)
+            Util::FatalError("Error storing seed!", array($seed,$stmt,$this->databaseHandle->errorInfo()));
+    }
+
+    public function fetchSeed(string $hash):Z2RSeed|bool {
+        $stmt = $this->databaseHandle->prepare("SELECT * FROM seeds WHERE `hash` = :hash LIMIT 1");
+        $stmt->execute(array(
+            "hash" => $hash
+        ));
+        
+        if($stmt) {
+            try {
+                $seed = $stmt->fetchObject("Z2RSeed");
+                return $seed;
+            } catch(Exception $e) {
+                Util::FatalError("Error when retrieving hash!",array($stmt,$seed,$e,array("hash"=>$hash)));
+            }
+        } else {
+            Util::FatalError("Error when retrieving hash!",array($this->databaseHandle->errorInfo()));
+        }
     }
 }
