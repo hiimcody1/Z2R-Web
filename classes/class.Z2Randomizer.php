@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 9:56:05 pm
  * Author: hiimcody1
  * 
- * Last Modified: Tuesday, 17th January 2023 7:21:52 pm
+ * Last Modified: Monday, 23rd January 2023 7:58:34 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -14,14 +14,14 @@ class Z2Randomizer {
     readonly string $flags;
     readonly int $seed;
     readonly string $hash;
-    readonly array $meta;
+    public array $meta;
     
     private array $arguments;
     private $ipsData;
     private $outputPath;
 
     function __construct(Z2RFlags $flags,int $seed=null) {
-        $this->seed = $seed;
+        $this->seed = ($seed == null) ? mt_rand(0,999999999) : $seed;
         $this->flags = $flags->SaveFlags();
         $this->hash = $this->generateUniqueHash();
         $this->meta = array();
@@ -63,7 +63,7 @@ class Z2Randomizer {
                     $seed->flags=$this->flags;
                     $seed->meta=json_encode($this->meta);
                     $seed->patch=$this->seedToIPS(Config::OutputDir . "Z2_" . $this->hash . ".nes");
-                    //$db->storeSeed($seed);
+                    $db->storeSeed($seed);
                     unlink(Config::OutputDir . "Z2_" . $this->hash . ".nes");
                     unlink(Config::OutputDir . "Z2_" . $this->hash . ".ips");
                 }

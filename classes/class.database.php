@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 8:03:33 pm
  * Author: hiimcody1
  * 
- * Last Modified: Tuesday, 17th January 2023 6:32:25 pm
+ * Last Modified: Monday, 23rd January 2023 7:48:46 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -41,6 +41,20 @@ class Database {
         $stmt = $this->databaseHandle->prepare("SELECT * FROM flagsets WHERE `name` LIKE :name ORDER BY `name` LIMIT 1");
         $stmt->execute(array(
             "name" => $name
+        ));
+
+        if($stmt) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results[0];
+        } else {
+            Util::FatalError("Error retrieving Flagsets", array($this->databaseHandle->errorInfo()));
+        }
+    }
+
+    public function fetchFlagsetById($id) {
+        $stmt = $this->databaseHandle->prepare("SELECT * FROM flagsets WHERE `id` = :id LIMIT 1");
+        $stmt->execute(array(
+            "id" => $id
         ));
 
         if($stmt) {

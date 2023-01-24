@@ -1,5 +1,6 @@
 <div class="container pt-5">
-    <ul class="nav nav-tabs" id="customizerTabs" role="tablist">
+    Not ready
+    <!--<ul class="nav nav-tabs" id="customizerTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
         </li>
@@ -52,20 +53,6 @@
                         
                         </div>
                     </div>
-                    <!--<div class="row">
-                        <div class="col">
-                        <span class="dropdown float-end">
-                            <a class="btn btn-success dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Generate
-                            </a>
-
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Race Seed</a></li>
-                                <li><a class="dropdown-item" href="#">Non Race Seed (Spoilers)</a></li>
-                            </ul>
-                        </span>
-                        </div>
-                    </div>-->
                     <br />
                 </div>
             </div>
@@ -167,6 +154,7 @@
         </div>
         <div id="optionDescriptions"></div>
     </div>
+-->
 </div>
 <script>
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

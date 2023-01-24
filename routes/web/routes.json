@@ -11,7 +11,7 @@
     },
     "customizer": {
         "_base": "customizer.php",
-        "_nav": true,
+        "_nav": false,
         "generate": "customgen.php"
     },
     "perm": {

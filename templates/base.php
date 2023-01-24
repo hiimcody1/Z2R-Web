@@ -25,7 +25,7 @@
 		<main class="flex-fill bg-light">
 			<?php echo $TemplateVars['Content']; ?>
 		</main>
-		<footer class="footer mt-auto py-3 bg-light">
+		<footer class="footer text-left mt-auto py-3 bg-light">
 			<div class="container">
 				<div class="row">
 					<div class="col-sm">

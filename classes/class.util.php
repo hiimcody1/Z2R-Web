@@ -4,7 +4,7 @@
  * File Created: Saturday, 9th July 2022 8:36:55 pm
  * Author: hiimcody1
  * 
- * Last Modified: Tuesday, 17th January 2023 7:37:39 pm
+ * Last Modified: Sunday, 22nd January 2023 2:34:01 am
  * Modified By: hiimcody1
  * 
  * License: MIT License http://www.opensource.org/licenses/MIT
@@ -84,5 +84,9 @@ class Util {
 
     public static function LogError($error,$trace) {
         //TODO
+    }
+
+    public static function APIResponse($payload,$status=200) {
+        return json_encode(array("status"=>$status,"payload"=>$payload));
     }
 }
