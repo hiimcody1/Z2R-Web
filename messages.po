@@ -1,0 +1,167 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-27 11:17-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/404.php:7 templates/home.php:4
+msgid "Z2R Web Interface"
+msgstr ""
+
+#: templates/404.php:8
+msgid "Page not found!"
+msgstr ""
+
+#: templates/base.php:32
+msgid "Web Wrapper"
+msgstr ""
+
+#: templates/base.php:35
+msgid "Using Z2R"
+msgstr ""
+
+#: templates/base.php:35
+msgid ""
+"This project wouldn't be possible without the contributions of the Z2R "
+"developers and community"
+msgstr ""
+
+#: templates/customizer.php:7
+msgid "Seed Flags"
+msgstr ""
+
+#: templates/customizer.php:11 templates/randomizer.php:9
+msgid "Seed Number (Optional)"
+msgstr ""
+
+#: templates/home.php:5
+msgid "Generate and share Z2R seeds from your browser."
+msgstr ""
+
+#: templates/home.php:7
+msgid "Generate a seed"
+msgstr ""
+
+#: templates/home.php:8 templates/randomizer.php:38
+msgid "Download the latest Z2R program to your computer for local generation"
+msgstr ""
+
+#: templates/home.php:8 templates/randomizer.php:38
+msgid "Download Local Program"
+msgstr ""
+
+#: templates/loading.php:15
+msgid "Generating seed, please wait..."
+msgstr ""
+
+#: templates/perm.php:10
+msgid "Your legally-obtained Z2 US Rom backup is required to continue"
+msgstr ""
+
+#: templates/perm.php:12
+msgid "Zelda II US ROM"
+msgstr ""
+
+#: templates/perm.php:15
+msgid ""
+"Invalid ROM detected. If you feel this is an error, please reload the "
+"website and try again!"
+msgstr ""
+
+#: templates/perm.php:31
+msgid "Save Rom"
+msgstr ""
+
+#: templates/perm.php:34
+msgid "Play as"
+msgstr ""
+
+#: templates/perm.php:41
+msgid "Reduce Flashing"
+msgstr ""
+
+#: templates/perm.php:44
+msgid "Music"
+msgstr ""
+
+#: templates/perm.php:50
+msgid "Low Health Beep"
+msgstr ""
+
+#: templates/perm.php:53
+msgid "Fast Spell Casting"
+msgstr ""
+
+#: templates/perm.php:59
+msgid "Remap Up+A to Up+Select on Controller 1"
+msgstr ""
+
+#: templates/perm.php:86
+msgid "Flags"
+msgstr ""
+
+#: templates/perm.php:87
+msgid "Seed"
+msgstr ""
+
+#: templates/perm.php:88
+msgid "Build"
+msgstr ""
+
+#: templates/perm.php:89
+msgid "Logic"
+msgstr ""
+
+#: templates/perm.php:90
+msgid "Created on"
+msgstr ""
+
+#: templates/perm.php:91
+msgid "Notes"
+msgstr ""
+
+#: templates/perm.php:106
+msgid "Seed not found!"
+msgstr ""
+
+#: templates/perm.php:108
+msgid "Error encountered, please try again!"
+msgstr ""
+
+#: templates/randomizer.php:6
+msgid "Generate a Preset"
+msgstr ""
+
+#: templates/randomizer.php:7
+msgid "Generate a Z2R seed from a list of curated flagsets"
+msgstr ""
+
+#: templates/randomizer.php:15
+msgid "Generate"
+msgstr ""
+
+#: templates/randomizer.php:33
+msgid "Use the Customizer"
+msgstr ""
+
+#: templates/randomizer.php:34
+msgid ""
+"Create a custom Z2R seed by selecting from multiple options and settings"
+msgstr ""
+
+#: templates/randomizer.php:36
+msgid "Launch Web Customizer"
+msgstr ""

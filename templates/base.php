@@ -29,10 +29,10 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-sm">
-						<span class="text-muted"><small>Web Wrapper (<?php echo Config::Version;?>)<br />&copy;<?php echo date("o");?> hiimcody1</small></span>
+						<span class="text-muted"><small><?=_("Web Wrapper");?> (<?php echo Config::Version;?>)<br />&copy;<?php echo date("o");?> hiimcody1</small></span>
 					</div>
 					<div class="col-sm">
-						<span class="text-muted float-end text-end"><small>Using Z2R <?php echo Config::Z2RVersion;?><br />This project wouldn't be possible without the contributions of the Z2R developers and community</small></span>
+						<span class="text-muted float-end text-end"><small><?=_("Using Z2R");?> <?php echo Config::Z2RVersion;?><br /><?=_("This project wouldn't be possible without the contributions of the Z2R developers and community");?></small></span>
 					</div>
 				</div>
 			</div>

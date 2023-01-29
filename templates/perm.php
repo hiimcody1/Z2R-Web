@@ -7,12 +7,12 @@
       </div>
       <div class="card-body">
         <div class="card-text d-none" id="romUpload">
-        <label for="romfile" class="form-label">Your legally-obtained Z2 US Rom backup is required to continue</label>
+        <label for="romfile" class="form-label"><?=_("Your legally-obtained Z2 US Rom backup is required to continue");?></label>
           <div class="input-group mb-3">
-            <span class="input-group-text" id="file-needed">Zelda II US ROM</span>
+            <span class="input-group-text" id="file-needed"><?=_("Zelda II US ROM");?></span>
             <input type="file" class="form-control" id="romfile" accept=".nes" aria-describedby="file-needed">
           </div>
-          <div class="alert alert-danger d-none" role="alert" id="badRom">Invalid ROM detected. If you feel this is an error, please reload the website and try again!</div>
+          <div class="alert alert-danger d-none" role="alert" id="badRom"><?=_("Invalid ROM detected. If you feel this is an error, please reload the website and try again!");?></div>
         </div>
           <div class="container d-none" id="seedInfo">
             <div class="row">
@@ -25,38 +25,33 @@
                 <div id="seedMeta"></div>
               </div>
               <div class="col text-end">
-                  <button type="button" class="btn btn-primary" id="downloadSeed">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Save Rom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button><br /><br />
+                  <button type="button" class="btn btn-primary" id="downloadSeed">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=_("Save Rom");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button><br /><br />
                   <div class="container text-start">
                   <div class="input-group mb-3">
-                    <span class="input-group-text" id="sprite-list-label">Play as</span>
-                    <select class="form-select" id="sprite-list" aria-label="Sprite Selection" disabled>
-                      <option data-content="<img src='https://www.pngitem.com/pimgs/m/594-5942132_zelda-ii-link-sprites-hd-png-download.png'> Link" selected>Link</option>
-                      <option>Some Other Sprite</option>
-                      <option>Yet Another Sprite</option>
-                      <option>Another Sprite Option</option>
+                    <span class="input-group-text" id="sprite-list-label"><?=_("Play as");?></span>
                     </select>
                   </div>
                     <div class="row">
                       <div class="col">
-                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="disableFlashing" /> <span class="fs-6">Reduce Flashing</span>
+                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="disableFlashing" /> <span class="fs-6"><?=_("Reduce Flashing");?></span>
                       </div>
                       <div class="col">
-                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="enableMusic" /> <span class="fs-6">Music</span>
-                      </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                      <div class="col">
-                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="enableHealthBeep" /> <span class="fs-6">Low Health Beep</span>
-                      </div>
-                      <div class="col">
-                        <input type="checkbox" data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="useFastSpell" /> <span class="fs-6">Fast Spell Casting</span>
+                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="enableMusic" /> <span class="fs-6"><?=_("Music");?></span>
                       </div>
                     </div>
                     <br />
                     <div class="row">
                       <div class="col">
-                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="remapUpA" /> <span class="fs-6">Remap Up+A to Up+Select on Controller 1</span>
+                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="enableHealthBeep" /> <span class="fs-6"><?=_("Low Health Beep");?></span>
+                      </div>
+                      <div class="col">
+                        <input type="checkbox" data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="useFastSpell" /> <span class="fs-6"><?=_("Fast Spell Casting");?></span>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col">
+                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="remapUpA" /> <span class="fs-6"><?=_("Remap Up+A to Up+Select on Controller 1");?></span>
                       </div>
                     </div>
                   </div>
@@ -83,12 +78,12 @@
     WebRequest.fetch("/api/hash/<?=$TemplateVars["_GET"][1]?>").then((response) => {
       if(response.status==200) {
         let seed = response.payload;
-        document.getElementById("seedFlags").innerText    = "Flags: " + seed.flags;
-        document.getElementById("seedSeed").innerText     = "Seed: " + seed.seed;
-        document.getElementById("seedBuild").innerText    = "Build: " + seed.build;
-        document.getElementById("seedLogic").innerText    = "Logic: " + seed.logic;
-        document.getElementById("seedCreated").innerText  = "Created on: " + seed.created_at;
-        document.getElementById("seedMeta").innerText     = "Notes: " + JSON.parse(seed.meta).notes;
+        document.getElementById("seedFlags").innerText    = "<?=_("Flags");?>: " + seed.flags;
+        document.getElementById("seedSeed").innerText     = "<?=_("Seed");?>: " + seed.seed;
+        document.getElementById("seedBuild").innerText    = "<?=_("Build");?>: " + seed.build;
+        document.getElementById("seedLogic").innerText    = "<?=_("Logic");?>: " + seed.logic;
+        document.getElementById("seedCreated").innerText  = "<?=_("Created on");?>: " + seed.created_at;
+        document.getElementById("seedMeta").innerText     = "<?=_("Notes");?>: " + JSON.parse(seed.meta).notes;
 
         seedName="Z2_" + seed.seed + "_" + seed.flags + ".nes"
         let rawPatch = atob(seed.patch);
@@ -103,9 +98,9 @@
         _readPatchFile();
 
       } else if(response.status==404) {
-        document.getElementById("seedInfo").innerHTML = '<div class="alert alert-warning" role="alert" id="seedNotFound">Seed not found!</div>';
+        document.getElementById("seedInfo").innerHTML = '<div class="alert alert-warning" role="alert" id="seedNotFound"><?=_("Seed not found!");?></div>';
       } else {
-        document.getElementById("seedInfo").innerHTML = '<div class="alert alert-danger" role="alert" id="seedFailure">Error encountered, please try again!</div>';
+        document.getElementById("seedInfo").innerHTML = '<div class="alert alert-danger" role="alert" id="seedFailure"><?=_("Error encountered, please try again!");?></div>';
       }
     }).catch((result) => {
       console.log(result);
