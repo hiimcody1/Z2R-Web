@@ -1,5 +1,25 @@
 <div class="container pt-5">
-    Not ready
+<div class="row align-items-md-stretch">
+    <div class="col-lg-10 col-md-8 mx-auto">
+        <div class="h-100 p-5 bg-white border rounded-3">
+            <form method="POST">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="seed-flags"><?=_("Seed Flags");?></span>
+                    <input type="text" class="form-control" id="seed-flags" name="seed-flags" aria-describedby="seed-flags">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="seed-number"><?=_("Seed Number (Optional)");?></span>
+                    <input type="text" class="form-control" id="seed-number" name="seed-number" aria-describedby="seed-number">
+                </div>
+                <div class="text-end">
+                    <a class="btn btn-success" href="#" role="button" aria-expanded="false" id="generate">
+                      Generate
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     <!--<ul class="nav nav-tabs" id="customizerTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
@@ -159,5 +179,16 @@
 <script>
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-
+</script>
+<script>
+    document.getElementById("generate").addEventListener("click", (event) => {
+        let flags = new FormData().append("flags",document.getElementById("seed-flags").value);
+        WebRequest.post("/api/flags/validate",flags).then((result) => {
+            if(result.payload) {
+                
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+    });
 </script>

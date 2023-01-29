@@ -29,6 +29,7 @@
                   <div class="container text-start">
                   <div class="input-group mb-3">
                     <span class="input-group-text" id="sprite-list-label"><?=_("Play as");?></span>
+                    <select class="form-select" id="sprite-list" aria-label="Sprite Selection">
                     </select>
                   </div>
                     <div class="row">
@@ -75,7 +76,7 @@
   });
 
   function retrieveSeedInfo() {
-    WebRequest.fetch("/api/hash/<?=$TemplateVars["_GET"][1]?>").then((response) => {
+    WebRequest.get("/api/hash/<?=$TemplateVars["_GET"][1]?>").then((response) => {
       if(response.status==200) {
         let seed = response.payload;
         document.getElementById("seedFlags").innerText    = "<?=_("Flags");?>: " + seed.flags;
@@ -96,6 +97,9 @@
         patchFile = new MarcFile(array);
 
         _readPatchFile();
+        window.setTimeout(() => {
+          populateSpriteList();
+        },250);
 
       } else if(response.status==404) {
         document.getElementById("seedInfo").innerHTML = '<div class="alert alert-warning" role="alert" id="seedNotFound"><?=_("Seed not found!");?></div>';
@@ -116,9 +120,13 @@ const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstra
 <script src="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.0.4/js/bootstrap5-toggle.ecmas.min.js"></script>
 
 <!-- Fancy Select Boxes for sprites -->
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css" /> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<style>
+  .choices {
+    width:75%;
+  }
+</style>
 
 <!-- Rom handling -->
 <script type="text/javascript" src="/js/MarcFile.js"></script>
@@ -137,3 +145,4 @@ const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstra
 <script type="text/javascript" src="/js/formats/vcdiff.js"></script>
 <script type="text/javascript" src="/js/zip.js/zip.js"></script>
 <script type="text/javascript" src="/js/RomPatcher.js"></script>
+<script type="text/javascript" src="/js/sprites.js"></script>

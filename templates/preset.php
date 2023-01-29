@@ -6,9 +6,9 @@
         $preset = $db->fetchFlagsetById($_POST['preset']);
         $seed_number = null;
         
-        if($_POST['seed_number'] != '') {
-          if(is_numeric($_POST['seed_number']) && strlen($_POST['seed_number']) < 10) {
-            $seed_number = $_POST['seed_number'];
+        if($_POST['seed-number'] != '') {
+          if(is_numeric($_POST['seed-number']) && strlen($_POST['seed-number']) < 10) {
+            $seed_number = $_POST['seed-number'];
           }
         }
 

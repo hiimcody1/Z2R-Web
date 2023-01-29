@@ -1,6 +1,5 @@
 {
     "api": {
-        "checker": "api.checker.php",
-        "hash": "api.hash.php"
+        "_base": "api.php"
     }
 }

@@ -4,7 +4,7 @@
  * File Created: Saturday, 14th January 2023 7:17:21 pm
  * Author: hiimcody1
  * 
- * Last Modified: Tuesday, 17th January 2023 1:35:28 am
+ * Last Modified: Tuesday, 24th January 2023 9:18:26 am
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -191,6 +191,20 @@ class Z2RFlags {
             }
         }
 
+        public function ValidateExternalFlags($flags) {
+            //Simple validation for now until better testing is build for flags
+            while(strlen($flags) < $this::TOTAL_FLAGS)
+                $flags .= "A";
+
+            for($i=0;$i<strlen($flags);$i++) {
+                if(strpos(Z2RBitArray::GLYPHS,substr($flags,$i,1)) === false) {
+                    return false;
+                } else
+                var_export(array(Z2RBitArray::GLYPHS,substr($flags,$i,1),$i));
+            }
+            return true;
+        }
+
         public function ParseFlags() {
             /*
                 Flag storage information
@@ -215,9 +229,11 @@ class Z2RFlags {
                 $BitArrays[] = new Z2RBitArray($this->flags[$i]);
                 for($b=0;$b<6;$b++) {
                     foreach($props as $prop) {
-                        if($prop->matchesArrayAndBit($i,$b))
+                        if($prop->matchesArrayAndBit($i,$b)) {
                             $prop->setBit($i,$b,$BitArrays[$i]->getBit($b));
+                        }
                     }
+                    
                 }
             }
         }
@@ -431,7 +447,7 @@ class Z2RFlags {
 }
 
 class Z2RBitArray {
-    protected const GLYPHS = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz1234567890!@#$";
+    public const GLYPHS = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz1234567890!@#$";
     private PseudoBitArray $BitArray;
     private String $Glyph;
     

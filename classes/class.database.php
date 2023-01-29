@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 8:03:33 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 23rd January 2023 7:48:46 pm
+ * Last Modified: Saturday, 28th January 2023 4:08:46 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -95,6 +95,22 @@ class Database {
             }
         } else {
             Util::FatalError("Error when retrieving hash!",array($this->databaseHandle->errorInfo()));
+        }
+    }
+
+    public function fetchSprites() {
+        $stmt = $this->databaseHandle->prepare("SELECT `id`,`name`,`author`,UNIX_TIMESTAMP(`lastUpdated`) AS `lastUpdated`,`tunicColor`,`shieldColor`,TO_BASE64(`patch`) AS `patch` FROM sprites");
+        $stmt->execute();
+        
+        if($stmt) {
+            try {
+                $sprites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $sprites;
+            } catch(Exception $e) {
+                Util::FatalError("Error when retrieving sprites!",array($stmt,$sprites,$e));
+            }
+        } else {
+            Util::FatalError("Error when retrieving sprites!",array($this->databaseHandle->errorInfo()));
         }
     }
 }
