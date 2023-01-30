@@ -4,7 +4,7 @@
  * File Created: Tuesday, 24th January 2023 3:17:55 pm
  * Author: hiimcody1
  * 
- * Last Modified: Tuesday, 24th January 2023 9:26:40 pm
+ * Last Modified: Sunday, 29th January 2023 7:35:32 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -47,6 +47,14 @@ switch($api) {
         $sprites = $db->fetchSprites();
         if($sprites)
             echo Util::APIResponse($sprites,200);
+        else
+            echo Util::APIResponse(null,500);
+        break;
+    case "beams":
+        $db = new Database();
+        $beams = $db->fetchBeamSprites();
+        if($beams)
+            echo Util::APIResponse($beams,200);
         else
             echo Util::APIResponse(null,500);
         break;

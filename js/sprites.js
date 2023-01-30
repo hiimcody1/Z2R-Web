@@ -1,7 +1,6 @@
 function populateSpriteList() {
     let spriteCache = indexedDb.obj.spriteCache;
     spriteCache = spriteCache==null? {} : spriteCache;
-    console.log(spriteCache);
     let spriteList = document.getElementById("sprite-list").options;
 
     if(!(-1 in spriteCache)) {
@@ -24,7 +23,7 @@ function populateSpriteList() {
     }
 
     let defaultLink = document.createElement("option");
-    defaultLink.text = spriteCache[-1]["name"];
+    defaultLink.text = spriteCache[-1]["name"] + "|" + spriteCache[-1]["author"];
     defaultLink.value = spriteCache[-1]["id"];
     defaultLink.selected = indexedDb.obj.spriteId == -1;
     defaultLink.setAttribute("data-custom-properties",spriteCache[-1]["render"]);
@@ -38,13 +37,42 @@ function populateSpriteList() {
             let sprite = sprites[i];
             if(sprite.id in spriteCache) {
                 if(spriteCache[sprite.id]["lastUpdated"] == sprite.lastUpdated) {
-                    spriteOption.text = spriteCache[sprite.id]["name"];
+                    spriteOption.text = spriteCache[sprite.id]["name"] + "|" + spriteCache[sprite.id]["author"];
                     spriteOption.value = spriteCache[sprite.id]["id"];
-                    console.log(indexedDb.obj);
                     spriteOption.selected = indexedDb.obj.spriteId == sprite.id;
                     spriteOption.setAttribute("data-custom-properties",spriteCache[sprite.id]["render"]);
                     spriteList.add(spriteOption);
                     continue;
+                } else {
+                    console.log(spriteCache[sprite.id]["name"] + " " + spriteCache[sprite.id]["lastUpdated"] + " !== " + sprite.lastUpdated + " - Update cache");
+
+                    spriteCache[sprite.id] = {};
+                    spriteCache[sprite.id]["id"] = sprite.id;
+                    spriteCache[sprite.id]["name"] = sprite.name;
+                    spriteCache[sprite.id]["author"] = sprite.author;
+                    spriteCache[sprite.id]["lastUpdated"] = sprite.lastUpdated;
+                    spriteCache[sprite.id]["tunicColor"] = sprite.tunicColor;
+                    spriteCache[sprite.id]["shieldColor"] = sprite.shieldColor;
+                    spriteCache[sprite.id]["patch"] = sprite.patch;
+                    spriteCache[sprite.id]["render"] = null;
+                    
+                    let rawPatch = atob(sprite.patch);
+
+                    var array = new Uint8Array(rawPatch.length);
+                    for(let r=0;r<rawPatch.length;r++) {
+                        array[r] = rawPatch.charCodeAt(r);
+                    }
+
+                    let spritePatchRaw = new MarcFile(array);
+                    let spritePatch = parseIPSFile(spritePatchRaw);
+                    let tempRom = spritePatch.apply(romFile);
+                    spriteCache[sprite.id]["render"] = renderSprite(tempRom);
+
+                    spriteOption.text = spriteCache[sprite.id]["name"] + "|" + spriteCache[sprite.id]["author"];
+                    spriteOption.value = spriteCache[sprite.id]["id"];
+                    spriteOption.selected = indexedDb.obj.spriteId == sprite.id;
+                    spriteOption.setAttribute("data-custom-properties",spriteCache[sprite.id]["render"]);
+                    spriteList.add(spriteOption);
                 }
             } else {
                 spriteCache[sprite.id] = {};
@@ -70,7 +98,7 @@ function populateSpriteList() {
             let tempRom = spritePatch.apply(romFile);
             spriteCache[sprite.id]["render"] = renderSprite(tempRom);
 
-            spriteOption.text = spriteCache[sprite.id]["name"];
+            spriteOption.text = spriteCache[sprite.id]["name"] + "|" + spriteCache[sprite.id]["author"];
             spriteOption.value = spriteCache[sprite.id]["id"];
             spriteOption.selected = indexedDb.obj.spriteId == sprite.id;
             spriteOption.setAttribute("data-custom-properties",spriteCache[sprite.id]["render"]);
@@ -78,7 +106,63 @@ function populateSpriteList() {
         }
         indexedDb.obj.spriteCache = spriteCache;
         indexedDb.save();
-        //initSpriteList();
+        initSpriteList();
+    } else {
+        console.log("Failed to load sprites!");
+    }
+    }).catch((error) => {
+    console.log(error);
+    });
+}
+
+function populateBeamSpriteList() {
+    let beamCache = indexedDb.obj.beamCache;
+    beamCache = beamCache==null? {} : beamCache;
+    let spriteList = document.getElementById("beam-list").options;
+
+    WebRequest.get("/api/beams").then((result) => {
+    if(result.status==200) {
+        let sprites = result.payload;
+        for(let i=0;i<sprites.length;i++) {
+            let spriteOption = document.createElement("option");
+            let sprite = sprites[i];
+            if(sprite.id in beamCache) {
+                if(beamCache[sprite.id]["lastUpdated"] == sprite.lastUpdated) {
+                    spriteOption.text = beamCache[sprite.id]["name"];
+                    spriteOption.value = beamCache[sprite.id]["id"];
+                    spriteOption.selected = indexedDb.obj.beamId == sprite.id;
+                    spriteOption.setAttribute("data-custom-properties","");
+                    spriteList.add(spriteOption);
+                    continue;
+                }
+            } else {
+                beamCache[sprite.id] = {};
+                beamCache[sprite.id]["id"] = sprite.id;
+                beamCache[sprite.id]["name"] = sprite.name;
+                beamCache[sprite.id]["author"] = sprite.author;
+                beamCache[sprite.id]["lastUpdated"] = sprite.lastUpdated;
+                beamCache[sprite.id]["patch"] = sprite.patch;
+            }
+
+            let rawPatch = atob(sprite.patch);
+
+            var array = new Uint8Array(rawPatch.length);
+            for(let r=0;r<rawPatch.length;r++) {
+                array[r] = rawPatch.charCodeAt(r);
+            }
+
+            let spritePatchRaw = new MarcFile(array);
+            let spritePatch = parseIPSFile(spritePatchRaw);
+            let tempRom = spritePatch.apply(romFile);
+
+            spriteOption.text = beamCache[sprite.id]["name"];
+            spriteOption.value = beamCache[sprite.id]["id"];
+            spriteOption.selected = indexedDb.obj.beamId == sprite.id;
+            spriteOption.setAttribute("data-custom-properties","");
+            spriteList.add(spriteOption);
+        }
+        indexedDb.obj.beamCache = beamCache;
+        indexedDb.save();
     } else {
         console.log("Failed to load sprites!");
     }
@@ -175,10 +259,10 @@ function renderSprite(rom) {
     
 
     let finalRender = document.createElement("canvas");
-    finalRender.width=64;
+    finalRender.width=32;
     finalRender.height=32;
     finalCtx = finalRender.getContext("2d");
-    finalCtx.putImageData(mainCtx.getImageData(8,0,64,32),0,0);
+    finalCtx.putImageData(mainCtx.getImageData(8,0,32,32),0,0);
 
     return finalRender.toDataURL();
 }
@@ -222,7 +306,7 @@ function initSpriteList() {
                     '\
                 >\
                 <span style="margin-right:10px;"><img src="' + data.customProperties + '" height=32 /></span> ' +
-                    String(data.label) +
+                    "<span><strong>" + data.label.split("|")[0] + "</strong></span><br /><span style=\"padding-left:48px;position:relative;top:-15px;\" class=\"text-nowrap text-muted small\"><i>" + data.label.split("|")[1] + "</i></span>" +
                     '\
             </div>\
             '
@@ -267,7 +351,7 @@ function initSpriteList() {
                     '\
                 >\
                 <span style="margin-right:10px;"><img src="' + data.customProperties + '" height=32 /></span> ' +
-                    String(data.label) +
+                    "<span><strong>" + data.label.split("|")[0] + "</strong></span><br /><span style=\"padding-left:48px;position:relative;top:-15px;\" class=\"text-nowrap text-muted small\"><i>" + data.label.split("|")[1] + "</i></span>" +
                     '\
             </div>\
             '
@@ -277,4 +361,5 @@ function initSpriteList() {
         },
         }
     );
+    loadedSprites=true;
 }

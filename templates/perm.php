@@ -24,13 +24,28 @@
                 <div id="seedCreated"></div>
                 <div id="seedMeta"></div>
               </div>
-              <div class="col text-end">
+              <div class="col text-end text-nowrap">
                   <button type="button" class="btn btn-primary" id="downloadSeed">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=_("Save Rom");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button><br /><br />
                   <div class="container text-start">
                   <div class="input-group mb-3">
                     <span class="input-group-text" id="sprite-list-label"><?=_("Play as");?></span>
-                    <select class="form-select" id="sprite-list" aria-label="Sprite Selection">
+                    <select class="form-select d-none" id="sprite-list" aria-label="Sprite Selection">
+                      <option value="-2" data-custom-properties="https://static.hiimcody1.com/images/Random.png">Random|It's a secret to everybody</option>
                     </select>
+                  </div>
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="beam-list-label"><?=_("Beam Sprite");?></span>
+                    <select class="form-select" id="beam-list" aria-label="<?=_("Beam Sprite");?>">
+                      <option value=-1>Default</option>
+                      <option value=-2>Random</option>
+                    </select>
+                  </div>
+                  <div class="input-group mb-3">
+                      <span class="input-group-text" id="tunic-color-picker-label"><?=_("Tunic Color");?></span>
+                      <select class="form-select" id="tunic-color-picker" aria-label="<?=_("Tunic Color");?>"><option style="background-color:white;" value=-1>[Default]</option></select>
+                      &nbsp;&nbsp;
+                      <span class="input-group-text" id="shield-color-picker-label"><?=_("Shield Color");?></span>
+                      <select class="form-select" id="shield-color-picker" aria-label="<?=_("Shield Color");?>"><option style="background-color:white;" value=-1>[Default]</option></select>
                   </div>
                     <div class="row">
                       <div class="col">
@@ -66,6 +81,7 @@
   </div>
 </section>
 <script>
+  loadedSprites=false;
   var seedName="";
   document.getElementById("downloadSeed").addEventListener("click", function() {
       try{
@@ -97,8 +113,11 @@
         patchFile = new MarcFile(array);
 
         _readPatchFile();
+        initColorPicker("tunic-color-picker");
+        initColorPicker("shield-color-picker");
         window.setTimeout(() => {
           populateSpriteList();
+          populateBeamSpriteList();
         },250);
 
       } else if(response.status==404) {
@@ -110,6 +129,31 @@
       console.log(result);
     });
   }
+
+function initColorPicker(element) {
+  let picker = document.getElementById(element);
+
+  var keys = Object.keys(Z2Rom.palettes);
+  let c=0;
+  for(let i=0x20;i<0x2C;i++) {
+    let square = document.createElement("option");
+    square.style.backgroundColor = "rgba("+Z2Rom.palettes[keys[i]].join(", ")+")";
+    square.value = keys[i];
+    //square.innerText = "";
+    //square.innerText = keys[i].toString(16);
+    picker.appendChild(square);
+  }
+
+  picker.addEventListener("change",(e) => {
+    if(e.target.value==-1)
+      e.target.style.backgroundColor = "";
+    else
+      e.target.style.backgroundColor = "rgba("+Z2Rom.palettes[keys[e.target.value]].join(", ")+")";
+  });
+
+  if(element.value > 0)
+    element.style.backgroundColor = "rgba("+Z2Rom.palettes[keys[element.value]].join(", ")+")";
+}
 </script>
 <script>
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

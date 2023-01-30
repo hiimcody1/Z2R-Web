@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 8:03:33 pm
  * Author: hiimcody1
  * 
- * Last Modified: Saturday, 28th January 2023 4:08:46 pm
+ * Last Modified: Sunday, 29th January 2023 7:31:59 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -23,6 +23,7 @@ class Database {
         }
     }
 
+    //Flagset-related
     public function fetchFlagsets() {
         $stmt = $this->databaseHandle->prepare("SELECT * FROM flagsets WHERE `logic` = :logic ORDER BY `name`");
         $stmt->execute(array(
@@ -65,6 +66,7 @@ class Database {
         }
     }
 
+    //Seed-related
     public function storeSeed(Z2RSeed $seed) {
         $stmt = $this->databaseHandle->prepare("INSERT INTO seeds (hash, seed, build, logic, flags, meta, patch) VALUES (:hash, :seed, :build, :logic, :flags, :meta, :patch);");
             $stmt->bindParam(":hash", $seed->hash);
@@ -98,8 +100,39 @@ class Database {
         }
     }
 
+
+    //Sprite-related
+    public function fetchSpriteAuthors() {
+        $stmt = $this->databaseHandle->prepare("SELECT DISTINCT `author` FROM sprites");
+        $stmt->execute();
+        
+        if($stmt) {
+            try {
+                $spriteAuthors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $spriteAuthors;
+            } catch(Exception $e) {
+                Util::FatalError("Error when retrieving sprite authors!",array($stmt,$spriteAuthors,$e));
+            }
+        } else {
+            Util::FatalError("Error when retrieving sprite authors!",array($this->databaseHandle->errorInfo()));
+        }
+    }
+
+    public function storeSprite($name,$author,$tunicColor,$shieldColor,$patch) {
+        $stmt = $this->databaseHandle->prepare("INSERT INTO sprites (name, author, tunicColor, shieldColor, patch) VALUES (:name, :author, :tunicColor, :shieldColor, :patch);");
+            $stmt->bindParam(":name", $name);
+            $stmt->bindParam(":author", $author);
+            $stmt->bindParam(":tunicColor", $tunicColor);
+            $stmt->bindParam(":shieldColor", $shieldColor);
+            $stmt->bindParam(":patch", $patch, PDO::PARAM_LOB);
+        $stmt->execute();
+
+        if(!$stmt)
+            Util::FatalError("Error storing sprite!", array($_POST,$stmt,$this->databaseHandle->errorInfo()));
+    }
+
     public function fetchSprites() {
-        $stmt = $this->databaseHandle->prepare("SELECT `id`,`name`,`author`,UNIX_TIMESTAMP(`lastUpdated`) AS `lastUpdated`,`tunicColor`,`shieldColor`,TO_BASE64(`patch`) AS `patch` FROM sprites");
+        $stmt = $this->databaseHandle->prepare("SELECT `id`,`name`,`author`,UNIX_TIMESTAMP(`lastUpdated`) AS `lastUpdated`,`tunicColor`,`shieldColor`,TO_BASE64(`patch`) AS `patch` FROM sprites ORDER BY `name`");
         $stmt->execute();
         
         if($stmt) {
@@ -111,6 +144,22 @@ class Database {
             }
         } else {
             Util::FatalError("Error when retrieving sprites!",array($this->databaseHandle->errorInfo()));
+        }
+    }
+
+    public function fetchBeamSprites() {
+        $stmt = $this->databaseHandle->prepare("SELECT `id`,`name`,`author`,UNIX_TIMESTAMP(`lastUpdated`) AS `lastUpdated`,TO_BASE64(`patch`) AS `patch` FROM beams ORDER BY `name`");
+        $stmt->execute();
+        
+        if($stmt) {
+            try {
+                $sprites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $sprites;
+            } catch(Exception $e) {
+                Util::FatalError("Error when retrieving beam sprites!",array($stmt,$sprites,$e));
+            }
+        } else {
+            Util::FatalError("Error when retrieving beam sprites!",array($this->databaseHandle->errorInfo()));
         }
     }
 }
