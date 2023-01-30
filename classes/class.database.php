@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 8:03:33 pm
  * Author: hiimcody1
  * 
- * Last Modified: Sunday, 29th January 2023 7:31:59 pm
+ * Last Modified: Monday, 30th January 2023 3:29:36 am
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -80,6 +80,25 @@ class Database {
 
         if(!$stmt)
             Util::FatalError("Error storing seed!", array($seed,$stmt,$this->databaseHandle->errorInfo()));
+    }
+
+    public function searchSeed(int $seedNumber, string $flags):Z2RSeed|bool {
+        $stmt = $this->databaseHandle->prepare("SELECT * FROM seeds WHERE `seed` = :seed AND `flags` = :flags LIMIT 1");
+        $stmt->execute(array(
+            "seed" => $seedNumber,
+            "flags"=> $flags
+        ));
+        
+        if($stmt) {
+            try {
+                $seed = $stmt->fetchObject("Z2RSeed");
+                return $seed;
+            } catch(Exception $e) {
+                Util::FatalError("Error when searching seed!",array($stmt,$seed,$e,array("seedNumber"=>$seedNumber,"flags"=>$flags)));
+            }
+        } else {
+            Util::FatalError("Error when searching seed!",array($this->databaseHandle->errorInfo()));
+        }
     }
 
     public function fetchSeed(string $hash):Z2RSeed|bool {

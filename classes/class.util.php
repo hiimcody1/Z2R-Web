@@ -4,7 +4,7 @@
  * File Created: Saturday, 9th July 2022 8:36:55 pm
  * Author: hiimcody1
  * 
- * Last Modified: Sunday, 22nd January 2023 2:34:01 am
+ * Last Modified: Monday, 30th January 2023 3:26:50 am
  * Modified By: hiimcody1
  * 
  * License: MIT License http://www.opensource.org/licenses/MIT
@@ -39,6 +39,14 @@ class Util {
             //*/
             $randomizer = unserialize($batchProcess["randomizer"]);
             file_put_contents(Config::TemporaryPath.$hash,json_encode(array("starttime"=>time(),"status"=>"waiting")));
+            
+            $db = new Database();
+            $seedSearch = $db->searchSeed($randomizer->seed,$randomizer->flags);
+            if($seedSearch) {
+                file_put_contents(Config::TemporaryPath.$hash,json_encode(array("starttime"=>time(),"status"=>"done","hash"=>$seedSearch->hash)));
+                return;
+            }
+            //*/
             $seed = $randomizer->generate();
             Util::FinishBackgroundProcess($randomizer->hash,$seed == null);
         } else {

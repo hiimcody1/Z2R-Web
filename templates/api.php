@@ -4,7 +4,7 @@
  * File Created: Tuesday, 24th January 2023 3:17:55 pm
  * Author: hiimcody1
  * 
- * Last Modified: Sunday, 29th January 2023 7:35:32 pm
+ * Last Modified: Monday, 30th January 2023 3:22:12 am
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -13,7 +13,8 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $api = $TemplateVars["_GET"][1];
-$arg = $TemplateVars["_GET"][2];
+if(count($TemplateVars["_GET"]) > 2)
+    $arg = $TemplateVars["_GET"][2];
 
 switch($api) {
     case "hash":
