@@ -4,7 +4,7 @@
  * File Created: Saturday, 14th January 2023 7:17:21 pm
  * Author: hiimcody1
  * 
- * Last Modified: Tuesday, 24th January 2023 9:18:26 am
+ * Last Modified: Thursday, 2nd February 2023 12:33:16 am
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -199,8 +199,9 @@ class Z2RFlags {
             for($i=0;$i<strlen($flags);$i++) {
                 if(strpos(Z2RBitArray::GLYPHS,substr($flags,$i,1)) === false) {
                     return false;
-                } else
-                var_export(array(Z2RBitArray::GLYPHS,substr($flags,$i,1),$i));
+                }
+                //else
+                //var_export(array(Z2RBitArray::GLYPHS,substr($flags,$i,1),$i));
             }
             return true;
         }

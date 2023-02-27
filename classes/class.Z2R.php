@@ -6,6 +6,7 @@ require_once("./config.php");
 require_once("./classes/class.database.php");
 require_once("./classes/class.process.php");
 require_once("./classes/class.util.php");
+require_once("./classes/class.patch.php");
 
 //Glue and types
 require_once("./classes/class.PseudoBitArray.php");

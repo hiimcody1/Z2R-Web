@@ -6,15 +6,7 @@
         <h3>Generated Seed</h3>
       </div>
       <div class="card-body">
-        <div class="card-text d-none" id="romUpload">
-        <label for="romfile" class="form-label"><?=_("Your legally-obtained Z2 US Rom backup is required to continue");?></label>
-          <div class="input-group mb-3">
-            <span class="input-group-text" id="file-needed"><?=_("Zelda II US ROM");?></span>
-            <input type="file" class="form-control" id="romfile" accept=".nes" aria-describedby="file-needed">
-          </div>
-          <div class="alert alert-danger d-none" role="alert" id="badRom"><?=_("Invalid ROM detected. If you feel this is an error, please reload the website and try again!");?></div>
-        </div>
-          <div class="container d-none" id="seedInfo">
+          <div class="container" id="seedInfo">
             <div class="row">
               <div class="col">
                 <div id="seedFlags"></div>
@@ -25,6 +17,14 @@
                 <div id="seedMeta"></div>
               </div>
               <div class="col text-end text-nowrap">
+                  <div class="card-text d-none" id="romUpload">
+                  <label for="romfile" class="form-label"><?=_("Your legally-obtained Z2 US Rom backup is required to continue");?></label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="file-needed"><?=_("Zelda II US ROM");?></span>
+                      <input type="file" class="form-control" id="romfile" accept=".nes" aria-describedby="file-needed">
+                    </div>
+                    <div class="alert alert-danger d-none" role="alert" id="badRom"><?=_("Invalid ROM detected. If you feel this is an error, please reload the website and try again!");?></div>
+                  </div>
                   <button type="button" class="btn btn-primary" id="downloadSeed">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=_("Save Rom");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button><br /><br />
                   <div class="container text-start">
                   <div class="input-group mb-3">
@@ -58,7 +58,7 @@
                     <br />
                     <div class="row">
                       <div class="col">
-                        <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="enableHealthBeep" /> <span class="fs-6"><?=_("Low Health Beep");?></span>
+                        <input type="checkbox" data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="enableHealthBeep" /> <span class="fs-6"><?=_("Low Health Beep");?></span>
                       </div>
                       <div class="col">
                         <input type="checkbox" data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="useFastSpell" /> <span class="fs-6"><?=_("Fast Spell Casting");?></span>
@@ -68,6 +68,12 @@
                     <div class="row">
                       <div class="col">
                         <input type="checkbox" checked data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="remapUpA" /> <span class="fs-6"><?=_("Remap Up+A to Up+Select on Controller 1");?></span>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col">
+                        <input type="checkbox" data-toggle="toggle" data-onlabel="Yes" data-offlabel="No" data-width="75" id="projectNested" /> <span class="fs-6"><?=_("Create ProjectNested ROM [Not Race Legal]");?></span>
                       </div>
                     </div>
                   </div>
@@ -85,7 +91,37 @@
   var seedName="";
   document.getElementById("downloadSeed").addEventListener("click", function() {
       try{
-        applyPatch(patch,romFile);
+        if(document.getElementById("projectNested").checked) {
+          patchedRom = z2Patcher(romFile,patch,!document.getElementById("enableHealthBeep").checked,!document.getElementById("enableMusic").checked,document.getElementById("useFastSpell").checked,document.getElementById("remapUpA").checked,document.getElementById("disableFlashing").checked,document.getElementById("sprite-list").value,document.getElementById("tunic-color-picker").value,document.getElementById("shield-color-picker").value,document.getElementById("beam-list").value);
+          patchedRom.fileName=seedName;
+          patchedRom.fileType=romFile.fileType;
+          //let ips = createIPSFromFiles(romFile,patchedRom);
+          //let rawPatch = ips.export("tmp");
+          let blob=new Blob([patchedRom._u8array],{type:patchedRom.fileType});
+          let formData = new FormData();
+          
+          formData.append("patch", new File([blob], patchedRom.fileName));
+          console.log(formData);
+          WebRequest.upload("/api/smc",formData).then((patchResult) => {
+            if(patchResult.payload) {
+                console.log(patchResult);
+                let smcPatchRaw = atob(patchResult.payload.patch);
+                const byteNumbers = new Array(smcPatchRaw.length);
+                for (let i = 0; i < smcPatchRaw.length; i++) {
+                    byteNumbers[i] = smcPatchRaw.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                let patchFile = new MarcFile(byteArray);
+                patchFile.fileName = seedName + ".smc";
+                console.log(patchFile);
+                patchFile.save();
+            }
+          }).catch((error) => {
+              console.log(error);
+          });
+        } else {
+          applyPatch(patch,romFile);
+        }
       }catch(e){
         console.log(e);
       }
@@ -145,7 +181,7 @@ function initColorPicker(element) {
   }
 
   picker.addEventListener("change",(e) => {
-    if(e.target.value==-1)
+    if(e.target.value==-1 || e.target.value=="" || e.target.value==null)
       e.target.style.backgroundColor = "";
     else
       e.target.style.backgroundColor = "rgba("+Z2Rom.palettes[keys[e.target.value]].join(", ")+")";
@@ -154,6 +190,8 @@ function initColorPicker(element) {
   if(element.value > 0)
     element.style.backgroundColor = "rgba("+Z2Rom.palettes[keys[element.value]].join(", ")+")";
 }
+
+retrieveSeedInfo();
 </script>
 <script>
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

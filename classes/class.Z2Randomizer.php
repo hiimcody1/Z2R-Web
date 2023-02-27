@@ -4,7 +4,7 @@
  * File Created: Monday, 9th January 2023 9:56:05 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 23rd January 2023 7:58:34 pm
+ * Last Modified: Monday, 20th February 2023 5:35:38 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -98,6 +98,18 @@ class Z2Randomizer {
         $lines = explode("\n",$flips->GetOutput());
         if($lines[0] == "The patch was created successfully!") {
             return file_get_contents("Z2_" . $this->hash . ".ips");
+        } else
+            Util::FatalError("Failed to create patch!",$this);
+    }
+
+    private function seedToSFC($seed):string {
+        $nested = new Process(Config::Z2RDataPath . Config::NestedBinary,array(
+            "--rom " => $seed
+        ));
+        $nested->Start();
+        $lines = explode("\n",$nested->GetOutput());
+        if($lines[2] == "Successfully Created ROM!") {
+            return file_get_contents("Z2_" . $this->hash . ".nes.smc");
         } else
             Util::FatalError("Failed to create patch!",$this);
     }

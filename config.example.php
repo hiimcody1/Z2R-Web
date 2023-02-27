@@ -4,7 +4,7 @@
  * File Created: Saturday, 6th August 2022 8:49:42 pm
  * Author: hiimcody1
  * 
- * Last Modified: Saturday, 28th January 2023 7:22:56 pm
+ * Last Modified: Monday, 20th February 2023 5:24:34 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License http://www.opensource.org/licenses/MIT
@@ -36,6 +36,7 @@ class Config {
     const UseMono           = true; //Linux servers should leave this as true
     const Z2RBinary         = "Z2Randomizer.exe";
     const FlipsBinary       = "flips";
+    const NestedBinary      = "Project_Nexted.exe";
     const MaxGenAttempts    = 5;
 }
 ?>

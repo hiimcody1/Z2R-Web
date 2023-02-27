@@ -1,4 +1,8 @@
 function populateSpriteList() {
+    if(!romFile) {
+        simplePopulateSpriteList();
+        return;
+    }
     let spriteCache = indexedDb.obj.spriteCache;
     spriteCache = spriteCache==null? {} : spriteCache;
     let spriteList = document.getElementById("sprite-list").options;
@@ -115,7 +119,32 @@ function populateSpriteList() {
     });
 }
 
+function simplePopulateSpriteList() {
+    let spriteList = document.getElementById("sprite-list").options;
+    WebRequest.get("/api/sprites").then((result) => {
+        if(result.status==200) {
+            let sprites = result.payload;
+            for(let i=0;i<sprites.length;i++) {
+                let spriteOption = document.createElement("option");
+                let sprite = sprites[i];
+                spriteOption.text = sprite.name + "|" + sprite.author;
+                spriteOption.value = sprite.id;
+                spriteOption.selected = indexedDb.obj.spriteId == sprite.id;
+                spriteList.add(spriteOption);
+            }
+            initSpriteList();
+        } else {
+            console.log("Failed to load sprites!");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
 function populateBeamSpriteList() {
+    if(!romFile) {
+        return;
+    }
     let beamCache = indexedDb.obj.beamCache;
     beamCache = beamCache==null? {} : beamCache;
     let spriteList = document.getElementById("beam-list").options;
@@ -305,7 +334,7 @@ function initSpriteList() {
                     String(data.disabled ? 'aria-disabled="true"' : '') +
                     '\
                 >\
-                <span style="margin-right:10px;"><img src="' + data.customProperties + '" height=32 /></span> ' +
+                <span style="margin-right:10px;"><img src="' + (typeof data.customProperties == "string" ? data.customProperties : "https://static.hiimcody1.com/images/Random.png") + '" height=32 /></span> ' +
                     "<span><strong>" + data.label.split("|")[0] + "</strong></span><br /><span style=\"padding-left:48px;position:relative;top:-15px;\" class=\"text-nowrap text-muted small\"><i>" + data.label.split("|")[1] + "</i></span>" +
                     '\
             </div>\
@@ -350,7 +379,7 @@ function initSpriteList() {
                     ) +
                     '\
                 >\
-                <span style="margin-right:10px;"><img src="' + data.customProperties + '" height=32 /></span> ' +
+                <span style="margin-right:10px;"><img src="' + (typeof data.customProperties == "string" ? data.customProperties : "https://static.hiimcody1.com/images/Random.png") + '" height=32 /></span> ' +
                     "<span><strong>" + data.label.split("|")[0] + "</strong></span><br /><span style=\"padding-left:48px;position:relative;top:-15px;\" class=\"text-nowrap text-muted small\"><i>" + data.label.split("|")[1] + "</i></span>" +
                     '\
             </div>\

@@ -4,7 +4,7 @@
  * File Created: Tuesday, 24th January 2023 3:17:55 pm
  * Author: hiimcody1
  * 
- * Last Modified: Monday, 30th January 2023 3:22:12 am
+ * Last Modified: Monday, 20th February 2023 7:35:12 pm
  * Modified By: hiimcody1
  * 
  * License: MIT License https://opensource.org/licenses/MIT
@@ -12,11 +12,43 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
+try {
+    // Takes raw data from the request
+    $json = file_get_contents('php://input');
+    // Converts it into a PHP object
+    $data = json_decode($json, true);
+} catch(Exception $e) {
+    //Nothing for now
+}
+
 $api = $TemplateVars["_GET"][1];
 if(count($TemplateVars["_GET"]) > 2)
     $arg = $TemplateVars["_GET"][2];
 
 switch($api) {
+    case "generate":
+        //Generate a seed via the API
+        ob_start();
+        $flags = new Z2RFlags($data['flags']);
+        $db = new Database();
+        $preset = $db->fetchFlagsetByFlags($data['flags']);
+        $randomizer = new Z2Randomizer($flags,$data['seed']);
+        if($preset)
+            $randomizer->meta = array("notes"=>$preset['name'] . " preset");
+        else
+            $randomizer->meta = array("notes"=>"GanonGranny genned seed");
+            
+        $seed = $randomizer->generate();
+        ob_clean();
+        if($seed) {
+            if($preset) {
+                echo Util::APIResponse(array("hash"=>$seed->hash,"preset"=>$preset['name']));
+            } else {
+                echo Util::APIResponse(array("hash"=>$seed->hash));
+            }
+        } else
+            echo Util::APIResponse(null,404);
+        break;
     case "hash":
         if(isset($arg)) {
             //Checking a hash
@@ -81,6 +113,31 @@ switch($api) {
                 echo('<html><head><meta http-equiv="refresh" content="5"></head></html>');
             }
         }
+        break;
+    case "smc":
+        if(isset($_FILES['patch'])) {
+            /*
+            $file = sha1(random_bytes(5));
+            move_uploaded_file($_FILES['patch']['tmp_name'], Config::OutputDir . $file);
+            Patch::ApplyIPS(Config::Z2RDataPath . Config::RomFile, Config::OutputDir . $file, Config::OutputDir . $file . ".nes");
+            Patch::NEStoSMC(Config::OutputDir . $file . ".nes");
+            */
+            Patch::NEStoSMC($_FILES['patch']['tmp_name']);
+            if(isset($_POST['msu']) || true)
+                Patch::ApplyIPS($_FILES['patch']['tmp_name'] . ".smc", Config::Z2RDataPath . "naol-msu1.ips", $_FILES['patch']['tmp_name'] . ".smc");
+            if(file_exists($_FILES['patch']['tmp_name'] . ".smc")) {
+                echo Util::APIResponse(array(
+                    "patch" => base64_encode(file_get_contents($_FILES['patch']['tmp_name'] . ".smc"))
+                ),200);
+                
+                //unlink(Config::OutputDir . $file);
+                //unlink(Config::OutputDir . $file . ".nes");
+                //unlink(Config::OutputDir . $file . ".nes.smc");
+            } else {
+                echo Util::APIResponse(null,500);
+            }
+        } else
+            echo Util::APIResponse(null,500);
         break;
     default:
         echo Util::APIResponse(null,500);
